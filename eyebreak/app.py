@@ -33,3 +33,4 @@ class EyeBreakApp(rumps.App):
         schedule.clear()
         self.time_to_next_break = self.work_time
         sender.set_callback(self.schedule_break)
+        sender.title = "Schedule"
