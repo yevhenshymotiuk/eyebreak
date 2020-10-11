@@ -17,7 +17,7 @@ class EyeBreakApp(rumps.App):
             self.schedule_button = self.menu["Schedule"]
 
         notify("Break scheduled", title="EyeBreak")
-        schedule.every(2).seconds.do(self.send_break_notification)
+        schedule.every(30).minutes.do(self.send_break_notification)
         self.schedule_button.set_callback(None)
 
     def send_break_notification(self):
