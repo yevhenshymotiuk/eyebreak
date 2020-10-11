@@ -1,0 +1,6 @@
+# python
+dist/
+*.egg-info
+
+# direnv
+.envrc
