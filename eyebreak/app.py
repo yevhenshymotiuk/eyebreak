@@ -20,7 +20,6 @@ class EyeBreakApp(rumps.App):
             self.schedule_button = sender
 
         sender.set_callback(None)
-        notify("Break scheduled", title="EyeBreak")
 
         def update_schedule_button_title():
             if sender.callback is None and self.time_to_next_break != 0:
