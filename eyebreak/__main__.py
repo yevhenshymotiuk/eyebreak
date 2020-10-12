@@ -1,7 +1,4 @@
-import pkg_resources
+from eyebreak import ICON
+from eyebreak.app import App
 
-from eyebreak.app import EyeBreakApp
-
-EyeBreakApp(
-    "EyeBreak", icon=pkg_resources.resource_filename(__name__, "icon.png")
-).run()
+App("EyeBreak", icon=ICON).run()

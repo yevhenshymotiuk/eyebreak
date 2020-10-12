@@ -1,16 +1,22 @@
+import pkg_resources
+
 import rumps
 import schedule
 from pync import notify
 
+from eyebreak import ICON
 
-class EyeBreakApp(rumps.App):
+
+class App(rumps.App):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.schedule_button = None
+        self.scheduled = False
         self.work_time = 30
         self.time_to_next_break = self.work_time
         self.schedule_button = None
+        self.stop_button = None
 
         schedule.run_continuously()
 
@@ -33,8 +39,17 @@ class EyeBreakApp(rumps.App):
         )
         schedule.every().minute.do(update_schedule_button_title)
 
+        self.scheduled = True
+
+        self.stop_button.set_callback(self.stop)
+
     def send_break_notification(self, sender):
-        notify("Take a 10 min. break!", title="EyeBreak", sound="default")
+        notify(
+            "Take a 10 min. break!",
+            title="EyeBreak",
+            sound="default",
+            appIcon=ICON,
+        )
         self.stop_scheduling(sender)
 
     def stop_scheduling(self, sender):
@@ -45,6 +60,16 @@ class EyeBreakApp(rumps.App):
 
         self.time_to_next_break = self.work_time
 
+        self.scheduled = False
+
+        self.stop_button.set_callback(None)
+
     @rumps.clicked("Stop")
-    def stop(self, _):
-        self.stop_scheduling(self.schedule_button)
+    def stop(self, sender):
+        if not self.stop_button:
+            self.stop_button = sender
+
+        if self.scheduled:
+            self.stop_scheduling(self.schedule_button)
+
+        sender.set_callback(None)
