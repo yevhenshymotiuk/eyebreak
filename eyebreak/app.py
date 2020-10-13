@@ -32,12 +32,12 @@ class App(rumps.App):
                 self.time_to_next_break -= 1
                 sender.title = f"Next break in {self.time_to_next_break} min."
 
-        update_schedule_button_title()
+        sender.title = f"Next break in {self.time_to_next_break} min."
+        schedule.every().minute.do(update_schedule_button_title)
 
         schedule.every(self.work_time).minutes.do(
             self.send_break_notification, sender=sender
         )
-        schedule.every().minute.do(update_schedule_button_title)
 
         self.scheduled = True
 
