@@ -16,7 +16,6 @@ class App(rumps.App):
         self.work_time = 30
         self.time_to_next_break = self.work_time
         self.schedule_button = None
-        self.stop_button = None
 
         schedule.run_continuously()
 
@@ -27,21 +26,21 @@ class App(rumps.App):
 
         sender.set_callback(None)
 
+        schedule.every(self.work_time).minutes.do(
+            self.send_break_notification, sender=sender
+        )
+
         def update_schedule_button_title():
-            if sender.callback is None and self.time_to_next_break != 0:
+            if self.scheduled:
                 self.time_to_next_break -= 1
                 sender.title = f"Next break in {self.time_to_next_break} min."
 
         sender.title = f"Next break in {self.time_to_next_break} min."
         schedule.every().minute.do(update_schedule_button_title)
 
-        schedule.every(self.work_time).minutes.do(
-            self.send_break_notification, sender=sender
-        )
-
         self.scheduled = True
 
-        self.stop_button.set_callback(self.stop)
+        self.menu["Stop"].set_callback(self.stop)
 
     def send_break_notification(self, sender):
         notify(
@@ -62,13 +61,10 @@ class App(rumps.App):
 
         self.scheduled = False
 
-        self.stop_button.set_callback(None)
+        self.menu["Stop"].set_callback(None)
 
     @rumps.clicked("Stop")
     def stop(self, sender):
-        if not self.stop_button:
-            self.stop_button = sender
-
         if self.scheduled:
             self.stop_scheduling(self.schedule_button)
 
